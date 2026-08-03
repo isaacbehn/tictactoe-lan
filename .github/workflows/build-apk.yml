@@ -35,6 +35,12 @@ jobs:
             -keyalg RSA -keysize 2048 -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
+      - name: Configurar Java SDK
+        run: |
+          JAVA_BIN=$(readlink -f $(which java))
+          JAVA_HOME_PATH=$(dirname $(dirname "$JAVA_BIN"))
+          echo "JAVA_HOME=$JAVA_HOME_PATH" >> $GITHUB_ENV
+
       - name: Preparar carpeta de salida
         run: mkdir -p build
 
