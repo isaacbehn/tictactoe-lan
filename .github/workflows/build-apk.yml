@@ -1,0 +1,40 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Compilar APK
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Generar keystore de depuración
+        run: |
+          mkdir -p ~/.android
+          keytool -genkeypair -v \
+            -keystore ~/.android/debug.keystore \
+            -storepass android -alias androiddebugkey -keypass android \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
+      - name: Preparar carpeta de salida
+        run: mkdir -p build
+
+      - name: Importar proyecto (genera el .godot/ y detecta assets)
+        run: godot --headless --import --path .
+
+      - name: Exportar APK (debug)
+        run: godot --headless --export-debug "Android" build/tictactoe-lan.apk --path .
+
+      - name: Subir APK como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: tictactoe-lan-apk
+          path: build/tictactoe-lan.apk
