@@ -49,10 +49,6 @@ jobs:
 
       - name: Exportar APK (debug)
         run: godot --headless --export-debug "Android" build/tictactoe-lan.apk --path .
-        env:
-          GODOT_ANDROID_KEYSTORE_DEBUG_PATH: ${{ env.KEYSTORE_PATH }}
-          GODOT_ANDROID_KEYSTORE_DEBUG_USER: androiddebugkey
-          GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD: android
 
       - name: Subir APK como artefacto
         uses: actions/upload-artifact@v4
